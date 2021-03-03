@@ -1,22 +1,10 @@
 <template>
-  <div>发现音乐</div>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      data: ''
-    }
-  },
-  created() {
-    this.getData()
-  },
-  methods: {
-    async getData() {
-      const data = await this.$http.get('/homepage/block/page')
-      console.log(data)
-    }
-  }
-}
+export default {}
 </script>
-<style lang="css"></style>
+<style lang="css" scoped>
+</style>
