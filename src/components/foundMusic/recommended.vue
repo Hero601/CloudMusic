@@ -24,37 +24,67 @@
     </div>
     <div class="containerMain">
       <div class="songList">
-        <!-- 榜单前的功能菜单 -->
-        <div class="songListTitle">
-          <div>
-            <span class="firstTitle"><a href="#">热门推荐</a></span>
-            <el-divider direction="vertical"></el-divider>
-            <span> <a href="#">华语</a></span>
-            <el-divider direction="vertical"></el-divider>
-            <span> <a href="#">流行</a></span>
-            <el-divider direction="vertical"></el-divider>
-            <span> <a href="#">摇滚</a></span>
-            <el-divider direction="vertical"></el-divider>
-            <span> <a href="#">民谣</a></span>
-            <el-divider direction="vertical"></el-divider>
-            <span> <a href="#">电子</a></span>
-            <span class="readMore"> <a href="#">更多</a></span>
+        <!-- 第一块歌单 -->
+        <div>
+          <!-- 榜单前的功能菜单 -->
+          <div class="fitstSongListTitle songListTitle">
+            <div>
+              <span class="firstTitle"><a href="#">热门推荐</a></span>
+              <el-divider direction="vertical"></el-divider>
+              <span> <a href="#">华语</a></span>
+              <el-divider direction="vertical"></el-divider>
+              <span> <a href="#">流行</a></span>
+              <el-divider direction="vertical"></el-divider>
+              <span> <a href="#">摇滚</a></span>
+              <el-divider direction="vertical"></el-divider>
+              <span> <a href="#">民谣</a></span>
+              <el-divider direction="vertical"></el-divider>
+              <span> <a href="#">电子</a></span>
+              <span class="readMore"> <a href="#">更多</a></span>
+            </div>
+          </div>
+          <!-- 歌单 -->
+          <div class="songListContent">
+            <ul>
+              <li v-for="item in recommendedPlayList" :key="item.id">
+                <div class="img">
+                  <img
+                    style="height: 140px; widht: 140px"
+                    :src="item.picUrl"
+                    alt=""
+                  />
+                </div>
+                <div class="text" v-text="item.name"></div>
+              </li>
+            </ul>
           </div>
         </div>
-        <!-- 歌单 -->
-        <div class="songListContent">
-          <ul>
-            <li v-for="item in recommendedPlayList" :key="item.id">
-              <div class="img">
-                <img
-                  style="height: 140px; widht: 140px"
-                  :src="item.picUrl"
-                  alt=""
-                />
-              </div>
-              <div class="text" v-text="item.name"></div>
-            </li>
-          </ul>
+        <!-- 第二块歌单 -->
+        <div>
+          <div class="songListTitle">
+            <div>
+              <span class="firstTitle"><a href="#">个性化推荐</a></span>
+              <span class="readMore"> <a href="#">更多</a></span>
+            </div>
+          </div>
+        </div>
+        <!-- 第三块歌单 -->
+        <div>
+          <div class="songListTitle">
+            <div>
+              <span class="firstTitle"><a href="#">新碟上架</a></span>
+              <span class="readMore"> <a href="#">更多</a></span>
+            </div>
+          </div>
+        </div>
+        <!-- 第四块歌单 -->
+        <div>
+          <div class="songListTitle">
+            <div>
+              <span class="firstTitle"><a href="#">榜单</a></span>
+              <span class="readMore"> <a href="#">更多</a></span>
+            </div>
+          </div>
         </div>
       </div>
       <!-- 右侧登录状态和歌手信息 -->
@@ -76,7 +106,7 @@ export default {
   created() {
     // 获取轮播图数据
     this.getBannerData()
-    // this.run()
+    this.run()
     // 获取推荐歌单
     this.getRecommendedPlayList()
   },
@@ -95,11 +125,14 @@ export default {
       const result = await this.$http.get('/personalized?limit=8')
       if (result.status !== 200) return this.$http.error('获取推荐歌单失败')
       this.recommendedPlayList = result.data.result
-      console.log(this.recommendedPlayList)
+    },
+    loginDialogHandleClick() {
+      console.log('object')
     },
     // 测试接口函数
     async run() {
-      const data = await this.$http.get('/personalized?limit=8')
+      // limit 表示取出5个
+      const data = await this.$http.get('/top/album?offset=0&limit=8')
       console.log(data)
     }
   }
@@ -138,8 +171,12 @@ export default {
   position: relative;
   padding-left: 10px;
   width: 689px;
+  padding-top: 30px;
   padding-bottom: 5px;
   border-bottom: 2px solid #c10d0c;
+}
+.fitstSongListTitle {
+  padding-top: 0;
 }
 
 .songList .firstTitle {

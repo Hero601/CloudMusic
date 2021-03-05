@@ -10,7 +10,9 @@ import {
   Carousel,
   CarouselItem,
   Message,
-  Divider
+  Divider,
+  Tabs,
+  TabPane
 } from 'element-ui'
 
 Vue.prototype.$message = Message
@@ -25,3 +27,5 @@ Vue.use(Dialog)
 Vue.use(Carousel)
 Vue.use(CarouselItem)
 Vue.use(Divider)
+Vue.use(Tabs)
+Vue.use(TabPane)

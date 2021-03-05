@@ -34,22 +34,57 @@
         <!-- 登录 -->
         <div class="login">
           <!-- 点击时展示登录对话框 -->
-          <a @click="showLoginDialog" href="#">登录</a>
+          <a v-if="!userInfo.avatarUrl" @click="showLoginDialog" href="#">登录</a>
+          <img style="width: 40px;" v-else :src="userInfo.avatarUrl">
         </div>
         <!-- 登录对话框 -->
         <el-dialog
           title="登录"
           :visible.sync="loginDialogVisible"
-          width="30%"
+          width="40%"
           :before-close="loginDialogClose"
         >
-          <span>扫码登录</span>
-          <img :src="qrSrc" />
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="loginDialogVisible = false"
-              >其他方式登录</el-button
-            >
-          </span>
+          <!-- 登录方式页签 -->
+          <template>
+            <!-- value=0 表示默认打开扫码登陆 -->
+            <el-tabs value="0">
+              <el-tab-pane label="扫码登录" name="0">
+                <div>打开网易云app -> 扫一扫</div>
+                <img :src="qrSrc" />
+              </el-tab-pane>
+              <el-tab-pane label="手机号登录" name="1">
+                <el-form
+                  ref="phoneLoginFormRef"
+                  :model="phoneLoginForm"
+                  label-width="80px"
+                >
+                  <el-form-item label="手机号">
+                    <el-input
+                      size="small"
+                      v-model="phoneLoginForm.phone"
+                    ></el-input>
+                  </el-form-item>
+                  <el-form-item label="密码">
+                    <el-input
+                      type="password"
+                      size="small"
+                      v-model="phoneLoginForm.password"
+                    ></el-input>
+                  </el-form-item>
+                  <button @click="phoneSubmit" class="phoneLoginSubmit">
+                    提交
+                  </button>
+
+                  <button @click.prevent='check'>验证登录状态</button>
+                </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="QQ登录" name="2">QQ登录</el-tab-pane>
+              <el-tab-pane label="网易邮箱登录" name="3"
+                >网易邮箱登录</el-tab-pane
+              >
+              <el-tab-pane label="微博登录" name="4">微博</el-tab-pane>
+            </el-tabs>
+          </template>
         </el-dialog>
       </div>
       <!-- 一级菜单下的选择按钮 -->
@@ -76,13 +111,21 @@
     </div> -->
   </div>
 </template>
+
 <script>
 export default {
   data() {
     return {
       loginDialogVisible: false,
       // 二维码图片的src属性
-      qrSrc: '/'
+      qrSrc: '/',
+      // 手机号登录表单对象
+      phoneLoginForm: {
+        phone: '',
+        password: ''
+      },
+      // 用户信息
+      userInfo: {}
     }
   },
   methods: {
@@ -109,6 +152,32 @@ export default {
       this.qrSrc = '/'
       // 关闭
       this.loginDialogVisible = false
+    },
+    // 手机登录
+    async phoneSubmit() {
+      const result = await this.$http.get('/login/cellphone', {
+        params: {
+          phone: this.phoneLoginForm.phone,
+          password: this.phoneLoginForm.password
+        }
+      })
+      // 登录失败
+      if (result.status !== 200) return this.$message.error(result.statusText)
+      let cookies = result.data.cookie
+      cookies = cookies.split('; ')
+      // 保存cookie
+      cookies.forEach(item => {
+        document.cookie = item
+        console.log(item)
+      })
+      // console.log(result)
+      this.userInfo = result.data.profile
+      // 登录成功，关闭登录对话框
+      this.loginDialogClose()
+    },
+    async check() {
+      const result = await this.$http.get('/login/status')
+      console.log(result)
     }
   }
 }
@@ -200,7 +269,13 @@ export default {
 }
 .login {
   margin-left: 20px;
-  line-height: 70px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  transform: translateY(40%);
+  border-radius: 50%;
+  overflow: hidden;
 }
 .login a {
   color: #ccc;
@@ -267,5 +342,13 @@ export default {
 
 .subnav ul li:hover a {
   background-color: #9b0909;
+}
+
+.phoneLoginSubmit {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #ccc;
 }
 </style>
