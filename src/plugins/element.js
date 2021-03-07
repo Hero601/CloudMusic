@@ -12,12 +12,18 @@ import {
   Message,
   Divider,
   Tabs,
-  TabPane
+  TabPane,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu
 } from 'element-ui'
 
 Vue.prototype.$message = Message
 
 Vue.use(Button)
+Vue.use(Dropdown)
+Vue.use(DropdownItem)
+Vue.use(DropdownMenu)
 Vue.use(Header)
 Vue.use(Form)
 Vue.use(FormItem)

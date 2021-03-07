@@ -33,9 +33,26 @@
         </div>
         <!-- 登录 -->
         <div class="login">
-          <!-- 点击时展示登录对话框 -->
-          <a v-if="!userInfo.avatarUrl" @click="showLoginDialog" href="#">登录</a>
-          <img style="width: 40px;" v-else :src="userInfo.avatarUrl">
+          <a v-if="!userInfo" @click="showLoginDialog" href="#">登录</a>
+          <el-dropdown v-if="userInfo">
+            <!-- 点击时展示登录对话框 -->
+            <img
+              style="width: 40px;"
+              v-if="userInfo"
+              :src="userInfo.profile.avatarUrl"
+            />
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>我的主页</el-dropdown-item>
+              <el-dropdown-item>我的消息</el-dropdown-item>
+              <el-dropdown-item>我的等级</el-dropdown-item>
+              <el-dropdown-item>VIP 会员</el-dropdown-item>
+              <el-dropdown-item>个人设置</el-dropdown-item>
+              <el-dropdown-item>实名认证</el-dropdown-item>
+              <el-dropdown-item
+                ><span @click="logout">退出登录</span></el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
         <!-- 登录对话框 -->
         <el-dialog
@@ -75,7 +92,7 @@
                     提交
                   </button>
 
-                  <button @click.prevent='check'>验证登录状态</button>
+                  <button @click.prevent="check">验证登录状态</button>
                 </el-form>
               </el-tab-pane>
               <el-tab-pane label="QQ登录" name="2">QQ登录</el-tab-pane>
@@ -94,7 +111,7 @@
             <li>
               <a class="activeSubnav" href="/foundmusic/discover">推荐</a>
             </li>
-            <li><a href="#">排行榜</a></li>
+            <li><a href="/foundmusic/toplist">排行榜</a></li>
             <li><a href="#">歌单</a></li>
             <li><a href="#">主播电台</a></li>
             <li><a href="#">歌手</a></li>
@@ -113,6 +130,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -123,12 +141,20 @@ export default {
       phoneLoginForm: {
         phone: '',
         password: ''
-      },
-      // 用户信息
-      userInfo: {}
+      }
     }
   },
+  created() {
+    // 一定要将 this(vue) 传递过去，因为在mutations中this为vuex，vuex中的并没有$localStorage属性
+    this.getUserInfoForLocalStorage(this)
+  },
+  computed: {
+    // userInfo：用户信息
+    ...mapState(['userInfo'])
+  },
   methods: {
+    // 映射的操作 state 函数
+    ...mapMutations(['getUserInfoForLocalStorage']),
     // 展示登录对话框，生成登录二维码
     async showLoginDialog() {
       // 当用户点击时生成二维码的key
@@ -155,12 +181,16 @@ export default {
     },
     // 手机登录
     async phoneSubmit() {
-      const result = await this.$http.get('/login/cellphone', {
-        params: {
-          phone: this.phoneLoginForm.phone,
-          password: this.phoneLoginForm.password
+      // 加上时间戳，防止缓存
+      const result = await this.$http.get(
+        '/login/cellphone?timestamp' + Date.now(),
+        {
+          params: {
+            phone: this.phoneLoginForm.phone,
+            password: this.phoneLoginForm.password
+          }
         }
-      })
+      )
       // 登录失败
       if (result.status !== 200) return this.$message.error(result.statusText)
       let cookies = result.data.cookie
@@ -168,16 +198,45 @@ export default {
       // 保存cookie
       cookies.forEach(item => {
         document.cookie = item
-        console.log(item)
       })
-      // console.log(result)
-      this.userInfo = result.data.profile
+      // 将登录信息保存到localStorage 中
+      this.$localStorage.set('userInfo', result.data)
+      // 登录成功，刷新页面
+      window.top.location.reload(true)
       // 登录成功，关闭登录对话框
       this.loginDialogClose()
     },
+    // 检测登录状态
     async check() {
       const result = await this.$http.get('/login/status')
       console.log(result)
+    },
+    // 退出登录
+    async logout() {
+      const result = await this.$http.get('/logout')
+      if (result.status !== 200) {
+        return this.$message.error('退出登录失败')
+      } else {
+        // 清除cookie
+        this.clearAllCookie()
+        // 清除localStorage
+        localStorage.removeItem('userInfo')
+        // 强制页面刷新
+        window.top.location.reload(true)
+      }
+    },
+    // 清除cookie
+    clearAllCookie() {
+      var date = new Date()
+      date.setTime(date.getTime() - 10000)
+      var keys = document.cookie.match(/[^ =;]+(?==)/g)
+      console.log('需要删除的cookie名字：' + keys)
+      if (keys) {
+        for (var i = keys.length; i--;) {
+          document.cookie =
+            keys[i] + '=0; expire=' + date.toGMTString() + '; path=/'
+        }
+      }
     }
   }
 }
