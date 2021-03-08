@@ -15,11 +15,21 @@ import {
   TabPane,
   Dropdown,
   DropdownItem,
-  DropdownMenu
+  DropdownMenu,
+  Menu,
+  Submenu,
+  MenuItem,
+  Table,
+  TableColumn
 } from 'element-ui'
 
 Vue.prototype.$message = Message
 
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(MenuItem)
+Vue.use(Menu)
+Vue.use(Submenu)
 Vue.use(Button)
 Vue.use(Dropdown)
 Vue.use(DropdownItem)

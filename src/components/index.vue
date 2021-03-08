@@ -5,6 +5,7 @@
         <div class="logo"></div>
         <div class="menu">
           <ul>
+            <!-- 当前展示页面才有 activeMenu 类 -->
             <li class="activeMenu"><a href="/foundMusic">发现音乐</a></li>
             <li><a href="/my">我的音乐</a></li>
             <li><a href="/friend">朋友</a></li>

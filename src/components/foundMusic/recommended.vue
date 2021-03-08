@@ -279,7 +279,8 @@ export default {
     // TODO 返回状态为 400 报错，无法使用 catch 捕获
     async signIn() {
       const result = await this.$http.get('/daily_signin?type=1')
-      console.log(result)
+      if (result.data.code !== 200) return this.$message.error('签到出现未知错误')
+      return this.$message.success(`签到成功，获得积分${result.data.point}`)
     },
     // 获取歌手列表
     async getSingerLisst() {
