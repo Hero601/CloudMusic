@@ -415,7 +415,6 @@ export default {
   cursor: pointer;
 }
 
-/* TODO 当前选中的 subnav */
 .activeSubnav {
   background-color: #9b0909;
   color: #fff;
