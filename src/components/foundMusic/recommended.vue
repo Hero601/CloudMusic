@@ -89,7 +89,7 @@
                 </div>
               </li>
               <!-- 私人雷达 -->
-              <li v-for="item in recommendData" :key='item.id'>
+              <li v-for="item in recommendData" :key="item.id">
                 <div class="img">
                   <img
                     style="height: 140px; widht: 140px"
@@ -98,8 +98,8 @@
                   />
                 </div>
                 <div class="text">
-                  <p class="dec">{{item.name}}</p>
-                  <p class="instructions">{{item.copywriter}}</p>
+                  <p class="dec">{{ item.name }}</p>
+                  <p class="instructions">{{ item.copywriter }}</p>
                 </div>
               </li>
             </ul>
@@ -135,14 +135,16 @@
           <!-- 使用了第三个块的部分样式 -->
           <div class="songListContent thirdBlock fourthBlock">
             <!-- 飙升榜 -->
-            <ul :rankingId='item.id' v-for="(item) in rankingData" :key="item.id">
+            <ul :rankingId="item.id" v-for="item in rankingData" :key="item.id">
               <!-- 榜单名称 -->
               <li class="imgLi">
-                <img style="width: 80px" :src="item.coverImgUrl">
-                <p>{{item.name}}</p>
+                <img style="width: 80px" :src="item.coverImgUrl" />
+                <p>{{ item.name }}</p>
               </li>
               <!-- 当前表单下的数据需要使用 rankingId 来获取 -->
-              <li v-for="(subItem, subIndex) in item.tracks" :key="subIndex">{{subItem.first}}</li>
+              <li v-for="(subItem, subIndex) in item.tracks" :key="subIndex">
+                {{ subItem.first }}
+              </li>
               <!-- 查看全部 -->
               <li class="showall">查看全部 ></li>
             </ul>
@@ -150,21 +152,29 @@
         </div>
       </div>
       <!-- 用户信息、歌手信息、主播信息 -->
-      <div :style="!userInfo ? 'height: 1142px;' : 'height: 1502px;'" class="musicians">
+      <div
+        :style="!userInfo ? 'height: 1142px;' : 'height: 1502px;'"
+        class="musicians"
+      >
         <!-- 用户信息 -->
         <div class="userBlock">
           <!-- 未登录展示内容 -->
-          <p v-if="!userInfo">登录网易云音乐，可以享受无限收藏的乐趣，并且无限同步到手机</p>
+          <p v-if="!userInfo">
+            登录网易云音乐，可以享受无限收藏的乐趣，并且无限同步到手机
+          </p>
           <!-- 登录展示内容 -->
           <div v-else class="userInfo">
             <!-- 用户头像 -->
             <div class="portrait">
-              <img style="height: 80px" :src="userInfo.profile.avatarUrl">
+              <img style="height: 80px" :src="userInfo.profile.avatarUrl" />
             </div>
             <!-- 用户昵称 -->
-            <div class="nickname">{{userInfo.profile.nickname}}</div>
+            <div class="nickname">{{ userInfo.profile.nickname }}</div>
             <!-- 签到 -->
-            <button @click='signIn' class="signIn">签到</button>
+            <button v-if="!isSignIn" @click="signIn" class="signIn">
+              签到
+            </button>
+            <button v-else class="yesSignIn signIn">已签到</button>
           </div>
         </div>
         <!-- 歌手列表 -->
@@ -175,8 +185,12 @@
           </div>
           <ul>
             <li v-for="item in singerList" :key="item.id">
-              <img style="width: 62px; height: 55px" :src="item.picUrl" alt="">
-              <p class="name">{{item.name}}</p>
+              <img
+                style="width: 62px; height: 55px"
+                :src="item.picUrl"
+                alt=""
+              />
+              <p class="name">{{ item.name }}</p>
             </li>
           </ul>
         </div>
@@ -204,7 +218,8 @@ export default {
       // 个性化推荐的歌单
       recommendData: [],
       // 歌手列表
-      singerList: []
+      singerList: [],
+      isSignIn: false
     }
   },
   computed: {
@@ -224,6 +239,8 @@ export default {
     this.getRecommendData()
     // 获取歌手列表
     this.getSingerLisst()
+    // 初始化是否登录
+    this.initSignIn()
   },
   methods: {
     // 获取轮播图数据
@@ -279,8 +296,17 @@ export default {
     // TODO 返回状态为 400 报错，无法使用 catch 捕获
     async signIn() {
       const result = await this.$http.get('/daily_signin?type=1')
-      if (result.data.code !== 200) return this.$message.error('签到出现未知错误')
-      return this.$message.success(`签到成功，获得积分${result.data.point}`)
+      if (result.data.code !== 200) {
+        return this.$message.error('签到出现未知错误')
+      }
+      window.sessionStorage.setItem('isSignIn', true)
+      // 显示本次签到得分
+      this.$message.success(`签到成功，获得积分${result.data.point}`)
+      // 刷新页面，更改签到按钮
+      window.top.location.reload(true)
+    },
+    initSignIn() {
+      this.isSignIn = window.sessionStorage.getItem('isSignIn') || false
     },
     // 获取歌手列表
     async getSingerLisst() {
@@ -426,8 +452,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .text .instructions {
   margin-top: 3px;
@@ -449,10 +475,10 @@ div.thirdBlock {
   background: #f5f5f5;
 }
 
-div.thirdBlock > ul > li:nth-child(1){
+div.thirdBlock > ul > li:nth-child(1) {
   padding-left: 30px;
 }
-div.thirdBlock > ul > li:nth-child(5){
+div.thirdBlock > ul > li:nth-child(5) {
   padding-left: 15px;
 }
 
@@ -494,7 +520,7 @@ div.fourthBlock ul {
   width: 230px;
   margin: 0;
   float: left;
-  border: .5px solid #ccc;
+  border: 0.5px solid #ccc;
   box-sizing: border-box;
 }
 div.fourthBlock ul li:not(:nth-child(1)) {
@@ -509,7 +535,7 @@ div.fourthBlock ul li.imgLi {
   padding: 0;
   padding: 20px 0 0 19px;
 }
-div.fourthBlock ul li.imgLi p{
+div.fourthBlock ul li.imgLi p {
   display: inline-block;
   color: #333;
   font-size: 16px;
@@ -530,7 +556,7 @@ div.fourthBlock ul li.showall {
 
 div.fourthBlock ul li:nth-child(2),
 div.fourthBlock ul li:nth-child(4),
-div.fourthBlock ul li:nth-child(6){
+div.fourthBlock ul li:nth-child(6) {
   background-color: #ddd;
 }
 
@@ -542,14 +568,14 @@ div.fourthBlock ul li.showall {
   position: relative;
   right: -110px;
 }
-.containerMain .musicians .userBlock{
+.containerMain .musicians .userBlock {
   /* height: 126px; */
   overflow: hidden;
   height: auto;
   background-color: rgb(227, 227, 227);
   box-shadow: 0 3px 3px 1px #ccc;
 }
-.containerMain .musicians .userBlock p{
+.containerMain .musicians .userBlock p {
   margin: 0;
   box-sizing: border-box;
   padding: 20px;
@@ -561,20 +587,20 @@ div.fourthBlock ul li.showall {
   padding: 20px;
   margin-bottom: 10px;
 }
-.musicians .userBlock .userInfo img{
-  border: .5px solid #ccc;
+.musicians .userBlock .userInfo img {
+  border: 0.5px solid #ccc;
   float: left;
 }
-.musicians .userBlock .userInfo .nickname{
+.musicians .userBlock .userInfo .nickname {
   font-size: 16px;
   float: left;
   font-weight: 600;
   margin-left: 20px;
   margin-top: 10px;
 }
-.musicians .userBlock .userInfo .signIn{
+.musicians .userBlock .userInfo .signIn {
   outline: none;
-  border: .5px solid #ccc;
+  border: 0.5px solid #ccc;
   padding: 5px 20px;
   font-size: 14px;
   background-color: rgb(0, 88, 139);
@@ -592,19 +618,19 @@ div.fourthBlock ul li.showall {
   padding: 10px;
 }
 
-.singerList .title{
+.singerList .title {
   margin-top: 5px;
   border-bottom: 1px solid #333;
   height: 43px;
 }
 .singerList .title p,
-.singerList .title a{
+.singerList .title a {
   float: left;
 }
-.singerList .title p{
+.singerList .title p {
   font-weight: 500;
 }
-.singerList .title a{
+.singerList .title a {
   position: relative;
   right: -90px;
   top: 17px;
@@ -614,20 +640,23 @@ div.fourthBlock ul li.showall {
   text-decoration: underline;
   cursor: pointer;
 }
-.singerList ul{
+.singerList ul {
   padding: 0 20px;
 }
 .singerList ul li {
   background-color: rgb(250, 250, 250);
   height: 55px;
   margin: 10px 0;
-  border: .5px solid #ccc;
+  border: 0.5px solid #ccc;
 }
 .singerList ul li img,
-.singerList ul li p{
+.singerList ul li p {
   float: left;
 }
-.singerList ul li img{
+.singerList ul li img {
   margin-right: 10px;
+}
+.musicians .userBlock .userInfo button.yesSignIn {
+  background-color: darkcyan;
 }
 </style>

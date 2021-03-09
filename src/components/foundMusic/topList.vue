@@ -44,7 +44,7 @@
               <p class="topListName">{{ topListDataDesc.name }}</p>
               <!-- 更新的时间 -->
               <!-- TODO 时间戳转日期 -->
-              <p>最近更新: {{ topListDataDesc.trackUpdateTime }}</p>
+              <p>最近更新: {{ timeStampToDate(topListDataDesc.updateTime) }}</p>
               <!-- 六个功能按钮 -->
               <div class="funBtn">
                 <button>播放</button>
@@ -72,10 +72,9 @@
                 </el-table-column>
                 <el-table-column prop="name" label="标题" width="300">
                 </el-table-column>
-                <!-- TODO 时间戳转时间 -->
                 <el-table-column prop="dt" label="时长" width="120">
                   <template slot-scope="scope">
-                    {{millisToMinutesAndSeconds(scope.row.dt)}}
+                    {{ millisToMinutesAndSeconds(scope.row.dt) }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="ar[0].name" label="歌手" width="180">
@@ -128,6 +127,11 @@ export default {
       var minutes = Math.floor(millis / 60000)
       var seconds = ((millis % 60000) / 1000).toFixed(0)
       return '0' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+    },
+    timeStampToDate(nS) {
+      return new Date(parseInt(nS))
+        .toLocaleString()
+        .replace(/:\d{1,2}$/, ' ')
     }
   }
 }

@@ -109,14 +109,16 @@
       <div class="subnav">
         <div class="container">
           <ul>
-            <li>
-              <a class="activeSubnav" href="/foundmusic/discover">推荐</a>
+            <!-- 绑定页面切换事件 -->
+            <li @click='pageChange'>
+              <a :class='activeSubPage == "discover" ? "activeSubnav" : "" ' href="/foundmusic/discover">推荐</a>
             </li>
-            <li><a href="/foundmusic/toplist">排行榜</a></li>
-            <li><a href="#">歌单</a></li>
-            <li><a href="#">主播电台</a></li>
-            <li><a href="#">歌手</a></li>
-            <li><a href="#">新碟上架</a></li>
+            <li @click='pageChange'><a href="/foundmusic/toplist" :class='activeSubPage == "toplist" ? "activeSubnav" : "" '>排行榜</a></li>
+            <li @click='pageChange'><a href="/foundmusic/playlist" :class='activeSubPage == "playlist" ? "activeSubnav" : "" '>歌单</a></li>
+            <!-- TODO 待修改的链接和 class 属性 -->
+            <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>主播电台</a></li>
+            <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>歌手</a></li>
+            <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>新碟上架</a></li>
           </ul>
         </div>
       </div>
@@ -142,12 +144,15 @@ export default {
       phoneLoginForm: {
         phone: '',
         password: ''
-      }
+      },
+      // 默认的三级路由活动页
+      activeSubPage: 'discover'
     }
   },
   created() {
     // 一定要将 this(vue) 传递过去，因为在mutations中this为vuex，vuex中的并没有$localStorage属性
     this.getUserInfoForLocalStorage(this)
+    this.readParamsForLocalStorage()
   },
   computed: {
     // userInfo：用户信息
@@ -156,6 +161,11 @@ export default {
   methods: {
     // 映射的操作 state 函数
     ...mapMutations(['getUserInfoForLocalStorage']),
+    // 页面渲染时，从 localStorage 中读取数据
+    readParamsForLocalStorage() {
+      // 将从 localStorage 中获取的数据存到三级活动路由中
+      this.activeSubPage = window.sessionStorage.getItem('activeSubPage')
+    },
     // 展示登录对话框，生成登录二维码
     async showLoginDialog() {
       // 当用户点击时生成二维码的key
@@ -238,6 +248,17 @@ export default {
             keys[i] + '=0; expire=' + date.toGMTString() + '; path=/'
         }
       }
+    },
+    // 页面切换事件
+    pageChange($event) {
+      // 取出href 中最后一个的路径
+      let url = $event.target.getAttribute('href').split('/')
+      url = url[url.length - 1]
+      // 将当前活动页设置到 sessionStorage 中
+      // activeSubPage 表示活动的三级路由
+      window.sessionStorage.setItem('activeSubPage', url)
+      console.log(url)
+      return false
     }
   }
 }

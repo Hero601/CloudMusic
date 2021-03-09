@@ -8,6 +8,8 @@ import friend from '../components/friend.vue'
 import recommended from '../components/foundMusic/recommended.vue'
 // 发现音乐下的排行榜页面
 import topList from '../components/foundMusic/topList.vue'
+// 发现音乐下的歌单页面
+import playlist from '../components/foundMusic/playlist.vue'
 
 Vue.use(VueRouter)
 
@@ -24,7 +26,8 @@ const routes = [
         redirect: '/foundmusic/discover',
         children: [
           { path: '/foundmusic/discover', component: recommended },
-          { path: '/foundmusic/toplist', component: topList }
+          { path: '/foundmusic/toplist', component: topList },
+          { path: '/foundmusic/playlist', component: playlist }
         ]
       },
       { path: '/my', component: myMusic },

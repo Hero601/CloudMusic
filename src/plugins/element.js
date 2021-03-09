@@ -20,11 +20,23 @@ import {
   Submenu,
   MenuItem,
   Table,
-  TableColumn
+  TableColumn,
+  Select,
+  Option,
+  OptionGroup,
+  Pagination,
+  Row,
+  Col
 } from 'element-ui'
 
 Vue.prototype.$message = Message
 
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Pagination)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(OptionGroup)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(MenuItem)
