@@ -43,7 +43,6 @@
               <!-- 排行榜名称 -->
               <p class="topListName">{{ topListDataDesc.name }}</p>
               <!-- 更新的时间 -->
-              <!-- TODO 时间戳转日期 -->
               <p>最近更新: {{ timeStampToDate(topListDataDesc.updateTime) }}</p>
               <!-- 六个功能按钮 -->
               <div class="funBtn">
