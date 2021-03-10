@@ -116,7 +116,7 @@
             <li @click='pageChange'><a href="/foundmusic/toplist" :class='activeSubPage == "toplist" ? "activeSubnav" : "" '>排行榜</a></li>
             <li @click='pageChange'><a href="/foundmusic/playlist" :class='activeSubPage == "playlist" ? "activeSubnav" : "" '>歌单</a></li>
             <!-- TODO 待修改的链接和 class 属性 -->
-            <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>主播电台</a></li>
+            <li @click='pageChange'><a href="/foundmusic/djradio" :class='activeSubPage == "djradio" ? "activeSubnav" : "" '>主播电台</a></li>
             <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>歌手</a></li>
             <li @click='pageChange'><a href="#" :class='activeSubPage == "#" ? "activeSubnav" : "" '>新碟上架</a></li>
           </ul>
@@ -164,7 +164,7 @@ export default {
     // 页面渲染时，从 localStorage 中读取数据
     readParamsForLocalStorage() {
       // 将从 localStorage 中获取的数据存到三级活动路由中
-      this.activeSubPage = window.sessionStorage.getItem('activeSubPage')
+      this.activeSubPage = window.sessionStorage.getItem('activeSubPage') || 'discover'
     },
     // 展示登录对话框，生成登录二维码
     async showLoginDialog() {

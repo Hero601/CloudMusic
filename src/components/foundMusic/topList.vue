@@ -127,6 +127,7 @@ export default {
       var seconds = ((millis % 60000) / 1000).toFixed(0)
       return '0' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
     },
+    // 时间戳（秒）转日期
     timeStampToDate(nS) {
       return new Date(parseInt(nS))
         .toLocaleString()
@@ -136,16 +137,28 @@ export default {
 }
 </script>
 <style lang="css" scoped>
+.containerMain {
+  width: 984px;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background-color: #FFF;
+}
+
 .containerMain > div {
   float: left;
 }
 .navMenu {
   width: 240px;
   border: 0.5px solid #ccc;
+  height: 100%;
+  border-right: none;
 }
 .navMenu .el-menu-item {
   padding-bottom: 5px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .navMenu .el-menu-item .img {
   margin-right: 10px;
@@ -166,7 +179,7 @@ export default {
   width: 740px;
   background-color: #fff;
   border: 0.5px solid #ccc;
-  border-left: none;
+  /* border-left: none; */
   height: auto;
   overflow: hidden;
 }

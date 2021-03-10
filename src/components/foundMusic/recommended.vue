@@ -129,7 +129,7 @@
           <div class="songListTitle">
             <div>
               <span class="firstTitle"><a href="#">榜单</a></span>
-              <span class="readMore"> <a href="#">更多</a></span>
+              <span class="readMore"> <a href="/foundmusic/toplist">更多</a></span>
             </div>
           </div>
           <!-- 使用了第三个块的部分样式 -->
